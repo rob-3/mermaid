@@ -268,26 +268,27 @@ function renderCommitHistory(svg, commitid, branches, direction) {
         .attr('stroke', config.nodeStrokeColor)
         .attr('stroke-width', config.nodeStrokeWidth);
 
-      let branch;
+      let branch_names = [];
       for (let branchName in branches) {
         if (branches[branchName].commit === commit) {
-          branch = branches[branchName];
-          break;
+          branch_names.push(branches[branchName]);
         }
       }
-      if (branch) {
-        log.debug('found branch ', branch.name);
-        svg
-          .select('#node-' + commit.id + ' p')
-          .append('xhtml:span')
-          .attr('class', 'branch-label')
-          .text(branch.name + ', ');
+      if (branch_names.length !== 0) {
+        for (const branch of branch_names) {
+          log.debug('found branch ', branch.name);
+          svg
+            .select('#node-' + commit.id + ' p')
+            .append('xhtml:span')
+            .attr('class', 'branch-label')
+            .text(branch.name + ', ');
+        }
       }
       svg
         .select('#node-' + commit.id + ' p')
         .append('xhtml:span')
         .attr('class', 'commit-id')
-        .text(commit.id);
+        .text(commit.message || commit.id);
       if (commit.message !== '' && direction === 'BT') {
         svg
           .select('#node-' + commit.id + ' p')

@@ -1,5 +1,6 @@
 import { log } from '../../logger';
 import { random } from '../../utils';
+import seedrandom from 'seedrandom';
 let commits = {};
 let head = null;
 let branches = { master: head };
@@ -7,7 +8,10 @@ let curBranch = 'master';
 let direction = 'LR';
 let seq = 0;
 
-function getId() {
+/** @param s */
+function getId(s) {
+  console.log(s);
+  seedrandom(s, { global: true });
   return random({ length: 7 });
 }
 
@@ -84,7 +88,7 @@ export const getOptions = function () {
 
 export const commit = function (msg) {
   const commit = {
-    id: getId(),
+    id: getId(head == null ? 'null' : `${head.id}${curBranch}`),
     message: msg,
     seq: seq++,
     parent: head == null ? null : head.id,
@@ -113,8 +117,8 @@ export const merge = function (otherBranch) {
   } else {
     // create merge commit
     const commit = {
-      id: getId(),
-      message: 'merged branch ' + otherBranch + ' into ' + curBranch,
+      id: getId(head == null ? 'null' : `${head.id}${curBranch}`),
+      message: '',
       seq: seq++,
       parent: [head == null ? null : head.id, branches[otherBranch]],
     };
